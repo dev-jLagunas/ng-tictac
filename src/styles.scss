@@ -1,1 +1,9 @@
 /* You can add global styles to this file, and also import other style files */
+@font-face {
+  font-family: "Neon";
+  src: url("assets/fonts/neon.ttf");
+}
+
+body {
+  font-family: "Neon";
+}
