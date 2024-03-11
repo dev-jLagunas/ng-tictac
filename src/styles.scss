@@ -1,9 +1,58 @@
-/* You can add global styles to this file, and also import other style files */
-@font-face {
-  font-family: "Neon";
-  src: url("assets/fonts/neon.ttf");
+/************************************************
+--CSS Reset--
+*************************************************/
+*,
+::after,
+::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
+/************************************************
+-- Global Classes --
+*************************************************/
+.neon-text {
+  color: #fff;
+  text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px #fff, 0 0 40px #0ff,
+    0 0 80px #0ff, 0 0 90px #0ff, 0 0 100px #0ff, 0 0 150px #0ff;
+}
+
+.neon-pink {
+  color: #ff77ff;
+  text-shadow: 0 0 5px #ff77ff, 0 0 10px #ff77ff, 0 0 20px #ff77ff,
+    0 0 40px #ff77ff, 0 0 80px #ff77ff, 0 0 90px #ff77ff, 0 0 100px #ff77ff,
+    0 0 150px #ff77ff;
+}
+
+.neon-yellow {
+  color: #ffff00; /* Yellow color code */
+  text-shadow: 0 0 5px #ffff00, 0 0 10px #ffff00, 0 0 20px #ffff00,
+    0 0 40px #ffff00, 0 0 80px #ffff00, 0 0 90px #ffff00, 0 0 100px #ffff00,
+    0 0 150px #ffff00;
+}
+
+.neon-red {
+  color: #ff0000; /* Red color code */
+  text-shadow: 0 0 5px #ff0000, 0 0 10px #ff0000, 0 0 20px #ff0000,
+    0 0 40px #ff0000, 0 0 80px #ff0000, 0 0 90px #ff0000, 0 0 100px #ff0000,
+    0 0 150px #ff0000;
+}
+
+.neon-green {
+  color: #0f0;
+  text-shadow: 0 0 5px #0f0, 0 0 10px #0f0, 0 0 20px #0f0, 0 0 40px #0f0;
+}
+
+/************************************************
+-- Global Styles --
+*************************************************/
+
 body {
-  font-family: "Neon";
+  background-color: #191919;
+  font-family: "Rajdhani", sans-serif;
+
+  & button {
+    font-family: "Rajdhani", sans-serif;
+  }
 }

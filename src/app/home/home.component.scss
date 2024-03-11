@@ -1,0 +1,68 @@
+/*******************************************
+Home Component Styles
+********************************************/
+.home-container {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.game-title {
+  font-size: 5rem;
+  text-align: center;
+  font-weight: 300;
+}
+
+.xo-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.character {
+  font-size: 6rem;
+  font-weight: 100;
+  animation: flicker 4s linear infinite;
+}
+
+.game-btn-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+}
+
+.game-btn {
+  font-size: 2rem;
+  background: transparent;
+  font-weight: 300;
+  border: 0;
+
+  &:hover {
+    cursor: pointer;
+    scale: 1.2;
+  }
+}
+
+//Flicker Animation
+@keyframes flicker {
+  0%,
+  19.999%,
+  22%,
+  62.999%,
+  64%,
+  64.999%,
+  70%,
+  100% {
+    opacity: 0.99;
+  }
+  20%,
+  21.999%,
+  63%,
+  63.999%,
+  65%,
+  69.999% {
+    opacity: 0.4;
+  }
+}
