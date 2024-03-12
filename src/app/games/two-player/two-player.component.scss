@@ -1,0 +1,107 @@
+/*******************************************
+Two Player Component Variables
+********************************************/
+$font-color-primary: white;
+
+/*******************************************
+Two Player Component Global Styles
+********************************************/
+button {
+  background: transparent;
+  color: $font-color-primary;
+  border: 0;
+  width: 100%;
+
+  &:hover {
+    cursor: pointer;
+    scale: 1.2;
+  }
+}
+
+/*******************************************
+Two Player Component Styles
+********************************************/
+.two-player-container {
+  height: 100vh;
+  color: $font-color-primary;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.game-over-title {
+  font-size: 2.5rem;
+}
+
+.active-player {
+  font-size: 2rem;
+  letter-spacing: 5px;
+  font-weight: 300;
+}
+
+.active-player span {
+  font-size: 4rem;
+}
+
+.timer {
+  text-align: center;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.game-board-container {
+  width: 90%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 10px;
+  margin-inline: auto;
+
+  @media (min-width: 425px) {
+    max-width: 70%;
+  }
+
+  @media (min-width: 768px) {
+    max-width: 50%;
+  }
+
+  @media (min-width: 1024px) {
+    max-width: 30%;
+  }
+}
+
+.game-cell {
+  border-block: 2px solid #31363f;
+  border-radius: 10px;
+  height: 100px;
+  width: full;
+  color: $font-color-primary;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 5rem;
+
+  @media (min-width: 425px) {
+    height: 125px;
+  }
+
+  @media (min-width: 768px) {
+    height: 125px;
+  }
+}
+
+.winning-wrapper {
+  text-align: center;
+}
+
+.winning-player {
+  font-size: 2rem;
+  letter-spacing: 5px;
+  font-weight: 300;
+}
+
+.home-btn {
+  margin-top: 2rem;
+  font-size: 1rem;
+}

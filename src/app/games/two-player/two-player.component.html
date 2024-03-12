@@ -1,1 +1,55 @@
-<p>two-player works!</p>
+<section class="two-player-container">
+  @if (gameplayService.isTimerExpired) {
+  <aside class="game-over-wrapper">
+    <h2 class="game-over-title">Game Over</h2>
+    <button class="play-again-btn" (click)="resetGame()">Play Again?</button>
+  </aside>
+  }
+  <h3 class="active-player">
+    Player
+    <span [ngClass]="activePlayer === 'O' ? 'neon-green' : 'neon-pink'">{{
+      activePlayer
+    }}</span
+    >'s Turn
+  </h3>
+
+  <aside class="game-timer-wrapper">
+    <p class="timer neon-yellow">
+      {{ gameplayService.timer }}
+    </p>
+  </aside>
+  <section class="game-board-container">
+    @for (cell of board; track cell.id) {
+    <div
+      class="game-cell"
+      (click)="updateCell(cell)"
+      [class.neon-pink]="cell.state === 'X'"
+      [class.neon-green]="cell.state === 'O'"
+    >
+      {{ cell.state }}
+    </div>
+    }
+  </section>
+  @if (gameplayService.winningPlayer) {
+  <aside class="winner-wrapper">
+    <h4 class="winning-player">
+      Player
+      <span [ngClass]="activePlayer === 'O' ? 'neon-green' : 'neon-pink'">{{
+        gameplayService.winningPlayer
+      }}</span>
+      Wins
+    </h4>
+    <button class="play-again-btn" (click)="resetGame()">Play Again?</button>
+  </aside>
+  } @if (gameplayService.isTie && !gameplayService.winningPlayer) {
+  <aside class="tie-wrapper">
+    <h4>It's a tie!</h4>
+    <button class="play-again-btn" (click)="resetGame()">Play Again?</button>
+  </aside>
+  }
+  <footer>
+    <button routerLink="" (click)="resetGame()" class="home-btn neon-text">
+      HOME
+    </button>
+  </footer>
+</section>
