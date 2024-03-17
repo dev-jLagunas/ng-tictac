@@ -38,20 +38,18 @@ export class GameplayService {
       this.startTimer();
       cell.state = this.activePlayer;
 
-      if (this.checkGameStatus()) {
+      const gameStatus = this.checkGameStatus();
+      if (gameStatus === 'win') {
         this.winningPlayer = this.activePlayer;
-        this.gameOver = true;
         clearInterval(this.timerInterval);
         this.timer = 10;
-      } else {
-        this.activePlayer = this.activePlayer === 'X' ? 'O' : 'X';
-      }
-
-      if (this.board.filter((cell) => cell.state !== null).length === 9) {
+      } else if (gameStatus === 'tie') {
         this.isTie = true;
         this.gameOver = true;
         this.timer = 10;
         clearInterval(this.timerInterval);
+      } else {
+        this.activePlayer = this.activePlayer === 'X' ? 'O' : 'X';
       }
     }
   }
@@ -68,7 +66,7 @@ export class GameplayService {
     }
   }
 
-  checkGameStatus(): boolean {
+  checkGameStatus(): string {
     // Check rows, columns, and diagonals
     const winningCombinations = [
       [0, 1, 2],
@@ -88,16 +86,16 @@ export class GameplayService {
         this.board[a].state === this.board[b].state &&
         this.board[a].state === this.board[c].state
       ) {
-        return true; // There is a winner
+        return 'win';
       }
     }
 
     // Check for tie (i.e. all cells are filled with no winning combination)
     if (this.board.every((cell) => cell.state !== null)) {
-      return false;
+      return 'tie';
     }
 
-    return false;
+    return 'continue';
   }
 
   startTimer(): void {
