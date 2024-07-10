@@ -1,73 +1,92 @@
-import { Injectable } from '@angular/core';
-import { Cell } from '../types/cell.type';
+import { Injectable, signal, Signal } from '@angular/core';
+
+interface Cell {
+  id: number;
+  state: 'X' | 'O' | null;
+}
 
 @Injectable({
   providedIn: 'root',
 })
 export class GameplayService {
-  board: Cell[] = [];
-  activePlayer: 'X' | 'O' = 'X';
-  winningPlayer: 'X' | 'O' | null = null;
-  isTie: boolean = false;
-  gameOver: boolean = false;
-  timer: number = 10;
-  timerInterval: any;
-  isTimerExpired: boolean = false;
+  private readonly initialBoard: Cell[] = Array.from(
+    { length: 9 },
+    (_, id) => ({ id, state: null })
+  );
 
-  constructor() {
-    this.createBoard();
-  }
+  private boardSignal = signal<Cell[]>(this.initialBoard);
+  public board$ = this.boardSignal;
 
-  createBoard(): void {
-    this.board = [];
-    for (let i = 0; i < 9; i++) {
-      this.board.push({ id: i, state: null });
-    }
-  }
+  private activePlayerSignal = signal<'X' | 'O'>('X');
+  public activePlayer$ = this.activePlayerSignal;
 
-  getBoard(): Cell[] {
-    return this.board;
-  }
+  private winningPlayerSignal = signal<'X' | 'O' | null>(null);
+  public winningPlayer$ = this.winningPlayerSignal;
 
-  getActivePlayer(): 'X' | 'O' {
-    return this.activePlayer;
-  }
+  private isTieSignal = signal<boolean>(false);
+  public isTie$ = this.isTieSignal;
 
-  updateCell(cell: Cell): void | string {
-    if (!cell.state) {
+  private gameOverSignal = signal<boolean>(false);
+  public gameOver$ = this.gameOverSignal;
+
+  private timerSignal = signal<number>(10);
+  public timer$ = this.timerSignal;
+
+  private isTimerExpiredSignal = signal<boolean>(false);
+  public isTimerExpired$ = this.isTimerExpiredSignal;
+
+  private timerInterval: any;
+
+  constructor() {}
+
+  updateCell(cell: Cell): void {
+    if (cell.state === null) {
       this.startTimer();
-      cell.state = this.activePlayer;
+      const updatedBoard = this.boardSignal().map((c) =>
+        c.id === cell.id ? { ...c, state: this.activePlayerSignal() } : c
+      );
+      this.boardSignal.set(updatedBoard);
 
-      const gameStatus = this.checkGameStatus();
-      if (gameStatus === 'win') {
-        this.winningPlayer = this.activePlayer;
-        clearInterval(this.timerInterval);
-        this.timer = 10;
-      } else if (gameStatus === 'tie') {
-        this.isTie = true;
-        this.gameOver = true;
-        this.timer = 10;
-        clearInterval(this.timerInterval);
-      } else {
-        this.activePlayer = this.activePlayer === 'X' ? 'O' : 'X';
-      }
+      this.handleGameStatus(updatedBoard);
     }
+  }
+
+  private handleGameStatus(board: Cell[]): void {
+    const gameStatus = this.checkGameStatus(board);
+    if (gameStatus === 'win') {
+      this.winningPlayerSignal.set(this.activePlayerSignal());
+      this.resetTimer();
+    } else if (gameStatus === 'tie') {
+      this.isTieSignal.set(true);
+      this.gameOverSignal.set(true);
+      this.resetTimer();
+    } else {
+      this.switchPlayer();
+    }
+  }
+
+  private switchPlayer(): void {
+    this.activePlayerSignal.set(this.activePlayerSignal() === 'X' ? 'O' : 'X');
   }
 
   makeComputerMove(): void {
-    if (this.activePlayer === 'O' && !this.gameOver && !this.isTimerExpired) {
-      let emptyCells = this.board.filter((cell) => cell.state === null);
+    if (
+      this.activePlayerSignal() === 'O' &&
+      !this.gameOverSignal() &&
+      !this.isTimerExpiredSignal()
+    ) {
+      const emptyCells = this.boardSignal().filter(
+        (cell) => cell.state === null
+      );
       if (emptyCells.length > 0) {
-        const randomIndex = Math.floor(Math.random() * emptyCells.length);
-        const randomCell = emptyCells[randomIndex];
-
+        const randomCell =
+          emptyCells[Math.floor(Math.random() * emptyCells.length)];
         this.updateCell(randomCell);
       }
     }
   }
 
-  checkGameStatus(): string {
-    // Check rows, columns, and diagonals
+  private checkGameStatus(board: Cell[]): string {
     const winningCombinations = [
       [0, 1, 2],
       [3, 4, 5],
@@ -79,45 +98,43 @@ export class GameplayService {
       [2, 4, 6], // Diagonals
     ];
 
-    for (const combination of winningCombinations) {
-      const [a, b, c] = combination;
+    for (const [a, b, c] of winningCombinations) {
       if (
-        this.board[a].state &&
-        this.board[a].state === this.board[b].state &&
-        this.board[a].state === this.board[c].state
+        board[a].state &&
+        board[a].state === board[b].state &&
+        board[a].state === board[c].state
       ) {
         return 'win';
       }
     }
 
-    // Check for tie (i.e. all cells are filled with no winning combination)
-    if (this.board.every((cell) => cell.state !== null)) {
-      return 'tie';
-    }
-
-    return 'continue';
+    return board.every((cell) => cell.state !== null) ? 'tie' : 'continue';
   }
 
-  startTimer(): void {
-    clearInterval(this.timerInterval);
-    this.timer = 10;
+  private startTimer(): void {
+    this.resetTimer();
+    this.timerSignal.set(10);
     this.timerInterval = setInterval(() => {
-      this.timer--;
-      if (this.timer <= 0) {
+      const currentTimer = this.timerSignal() - 1;
+      this.timerSignal.set(currentTimer);
+      if (currentTimer <= 0) {
         clearInterval(this.timerInterval);
-        this.isTimerExpired = true;
+        this.isTimerExpiredSignal.set(true);
       }
     }, 1000);
   }
 
-  resetGame(): void {
-    this.createBoard();
+  private resetTimer(): void {
     clearInterval(this.timerInterval);
-    this.activePlayer = 'X';
-    this.winningPlayer = null;
-    this.timer = 10;
-    this.isTimerExpired = false;
-    this.isTie = false;
-    this.gameOver = false;
+  }
+
+  resetGame(): void {
+    this.boardSignal.set(this.initialBoard);
+    this.activePlayerSignal.set('X');
+    this.winningPlayerSignal.set(null);
+    this.timerSignal.set(10);
+    this.isTimerExpiredSignal.set(false);
+    this.isTieSignal.set(false);
+    this.gameOverSignal.set(false);
   }
 }

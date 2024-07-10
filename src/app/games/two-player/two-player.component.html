@@ -1,5 +1,5 @@
 <section class="two-player-container">
-  @if (gameplayService.isTimerExpired) {
+  @if (isTimerExpired) {
   <aside class="game-over-wrapper">
     <h2 class="game-over-title">Game Over</h2>
     <button class="play-again-btn" (click)="resetGame()">Play Again?</button>
@@ -15,7 +15,7 @@
 
   <aside class="game-timer-wrapper">
     <p class="timer neon-yellow">
-      {{ gameplayService.timer }}
+      {{ timer }}
     </p>
   </aside>
   <section class="game-board-container">
@@ -30,18 +30,18 @@
     </div>
     }
   </section>
-  @if (gameplayService.winningPlayer) {
+  @if (winningPlayer) {
   <aside class="winner-wrapper">
     <h4 class="winning-player">
       Player
       <span [ngClass]="activePlayer === 'O' ? 'neon-green' : 'neon-pink'">{{
-        gameplayService.winningPlayer
+        winningPlayer
       }}</span>
       Wins
     </h4>
     <button class="play-again-btn" (click)="resetGame()">Play Again?</button>
   </aside>
-  } @if (gameplayService.isTie && !gameplayService.winningPlayer) {
+  } @if (isTie && !winningPlayer) {
   <aside class="tie-wrapper">
     <h4>It's a tie!</h4>
     <button class="play-again-btn" (click)="resetGame()">Play Again?</button>
